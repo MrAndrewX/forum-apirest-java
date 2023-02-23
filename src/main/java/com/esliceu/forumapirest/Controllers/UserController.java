@@ -3,16 +3,19 @@ package com.esliceu.forumapirest.Controllers;
 import com.esliceu.forumapirest.Forms.LoginForm;
 import com.esliceu.forumapirest.DTOs.LoginDTO;
 import com.esliceu.forumapirest.Forms.RegisterForm;
+import com.esliceu.forumapirest.Models.Category;
 import com.esliceu.forumapirest.Models.User;
 import com.esliceu.forumapirest.Services.CategoryService;
 import com.esliceu.forumapirest.Services.TokenService;
 import com.esliceu.forumapirest.Services.UserService;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -97,7 +100,19 @@ public class UserController {
             Map <String, Object> map2 = new HashMap<>();
             String[] perms = {"categories:write","categories:delete","own_topics:write","own_topics:delete","own_replies:write","own_replies:delete"};
             map2.put("root",perms);
-            map2.put("categories",categoryService.getAllCategories());
+
+            List<Category> categories = categoryService.getAllCategories();
+            for(Category c: categories) {
+                Map<String, Object> map3 = new HashMap<>();
+                String[] perms2 = {"categories_topics:write","categories_topics:delete","categories_replies:write","categories_replies:delete"};
+                map3.put(c.getTitle(),perms2);
+                map2.put("categories",map3);
+            }
+
+
+
+
+
         lh.setPermissions(map2);
 
         map.put("role", lh.getRole());
@@ -111,7 +126,9 @@ public class UserController {
         map.put("iat", tokenService.getIatFromToken(token.replace("Bearer ", "")));
         /*pAYLOAD*/
 
-
+        Gson gson = new Gson();
+        String json = gson.toJson(map);
+        System.out.println(json);
         return map;
     }
 

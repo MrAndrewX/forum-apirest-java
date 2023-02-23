@@ -12,6 +12,16 @@ public class Category {
     private String description;
     private String color;
 
+    public Category() {
+    }
+
+    public Category(long id, String slug, String title, String description, String color) {
+        this.id = id;
+        this.slug = slug;
+        this.title = title;
+        this.description = description;
+        this.color = color;
+    }
     /*FK*/
 
 

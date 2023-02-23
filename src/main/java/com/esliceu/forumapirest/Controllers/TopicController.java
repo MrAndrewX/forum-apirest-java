@@ -1,6 +1,7 @@
 package com.esliceu.forumapirest.Controllers;
 
 import com.esliceu.forumapirest.DTOs.LoginDTO;
+import com.esliceu.forumapirest.DTOs.TopicDTO;
 import com.esliceu.forumapirest.Models.Category;
 import com.esliceu.forumapirest.Models.Reply;
 import com.esliceu.forumapirest.Models.Topic;
@@ -9,7 +10,9 @@ import com.esliceu.forumapirest.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.HashMap;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,14 +38,6 @@ public class TopicController {
         List<Topic> topics = topicService.getTopicsByCategoryId(category.getId());
 
         Map<String, Object> map = new HashMap<>();
-
-
-        String email1 = tokenService.getEmailFromToken(token.replace("Bearer ", ""));
-
-
-       //
-
-
 
            for (Topic t: topics) {
                 Map <String, Object> topic = new HashMap<>();
@@ -73,9 +68,6 @@ public class TopicController {
 
                 map.put(t.getId()+"",topic);
             }
-
-
-
 
         return map;
     }
@@ -114,6 +106,7 @@ Map<String, Object> category = new HashMap<>();
         List<Reply> repliesList = replyService.getRepliesByTopicId(topic.getId());
 
         for (Reply r: repliesList) {
+
             User userReply = replyService.getUserByReplyId(r.getId());
            Map<String, Object> reply = new HashMap<>();
            Map<String, Object> userReplyMap = new HashMap<>();
@@ -148,6 +141,28 @@ Map<String, Object> category = new HashMap<>();
 
 
 
+
+        return map;
+    }
+
+    @PostMapping("/topics")
+    @CrossOrigin
+    public Map<String, Object> createTopic(@RequestBody TopicDTO topicDTO, @RequestHeader("Authorization") String token) {
+        Map <String, Object> map = new HashMap<>();
+        Topic topic = topicService.createTopic(topicDTO.getCategory(),topicDTO.getTitle(),topicDTO.getContent(), token.replace("Bearer ",""));
+        map.put("views",0);
+        map.put("_id",topic.getId());
+        map.put("title",topicDTO.getTitle());
+        map.put("content",topicDTO.getContent());
+        map.put("category",categoryService.getCategoryBySlug(topicDTO.getCategory()).getId());
+        int userId = (int) userService.getUserByEmail(tokenService.getEmailFromToken(token.replace("Bearer ",""))).getId();
+        map.put("user",userId);
+        map.put("createdAt", topic.getCreatedAt());
+        map.put("updatedAt",topic.getUpdatedAt());
+        map.put("__v",0);
+        map.put("replies",null);
+        map.put("numberOfReplies",0);
+        map.put("id",topic.getId());
 
         return map;
     }

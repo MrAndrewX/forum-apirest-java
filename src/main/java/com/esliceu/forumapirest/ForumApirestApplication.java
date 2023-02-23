@@ -19,5 +19,5 @@ public class ForumApirestApplication implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(tokenInterceptor).addPathPatterns("/getprofile").addPathPatterns("/c/*");	}
+		registry.addInterceptor(tokenInterceptor).addPathPatterns("/getprofile").addPathPatterns("/c/**");}
 }

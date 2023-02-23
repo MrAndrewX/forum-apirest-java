@@ -2,7 +2,13 @@ package com.esliceu.forumapirest.Services;
 
 import com.esliceu.forumapirest.Models.Category;
 import com.esliceu.forumapirest.Repos.CategoryRepo;
+import jakarta.persistence.LockModeType;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,10 +30,8 @@ public class CategoryService {
     }
 
     public List<Category> getAllCategories() {
-    return categoryRepo.findAll();
+        return categoryRepo.findAll();
     }
-
-
 
 
     public Category getCategoryById(int categoryid) {
@@ -37,4 +41,17 @@ public class CategoryService {
     public Category getCategoryBySlug(String slug) {
         return categoryRepo.findBySlug(slug);
     }
+
+
+    public boolean exists(String slug) {
+        return categoryRepo.existsBySlug(slug);
+    }
+
+    public void updateCategory(String slug, String title, String description) {
+
+        categoryRepo.updateCategory(slug, title, description);
+
+    }
 }
+
+
