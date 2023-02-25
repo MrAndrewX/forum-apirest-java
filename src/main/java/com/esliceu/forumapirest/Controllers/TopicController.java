@@ -83,7 +83,7 @@ Map<String, Object> category = new HashMap<>();
         Category categoryobj = topic.getCategory();
         //* Set category *//
         category.put("moderators",new String[]{});
-        category.put("_id",categoryobj.getId());
+        category.put("_id",categoryobj.getId()+"");
         category.put("title",categoryobj.getTitle());
         category.put("description",categoryobj.getDescription());
         category.put("slug",categoryobj.getSlug());
@@ -95,12 +95,12 @@ Map<String, Object> category = new HashMap<>();
         String email = topic.getUser().getEmail();
         User u = userService.getUserByEmail(email);
         user.put("role",u.getRole());
-        user.put("_id",u.getId());
+        user.put("_id",u.getId()+"");
         user.put("email",u.getEmail());
         user.put("name",u.getName());
         user.put("__v",0);
         user.put("avatarUrl","");
-        user.put("id",u.getId());
+        user.put("id",u.getId()+"");
 
         //* Set Replies *//
 
@@ -113,23 +113,23 @@ Map<String, Object> category = new HashMap<>();
            Map<String, Object> reply = new HashMap<>();
            Map<String, Object> userReplyMap = new HashMap<>();
            userReplyMap.put("role",userReply.getRole());
-              userReplyMap.put("_id",userReply.getId());
+              userReplyMap.put("_id",userReply.getId()+"");
                 userReplyMap.put("email",userReply.getEmail());
                 userReplyMap.put("name",userReply.getName());
                 userReplyMap.put("__v",0);
                 userReplyMap.put("avatarUrl","");
-                userReplyMap.put("id",userReply.getId());
+                userReplyMap.put("id",userReply.getId()+"");
 
-              reply.put("_id",r.getId());
+              reply.put("_id",r.getId()+"");
                 reply.put("content",r.getContent());
-                reply.put("topic",topic.getId());
+                reply.put("topic",topic.getId()+"");
                 reply.put("user",userReplyMap);
                 reply.put("createdAt",r.getCreatedAt());
                 reply.put("updatedAt",r.getUpdatedAt());
 
         }
         //* Set final map/
-        map.put("_id",topic.getId());
+        map.put("_id",topic.getId()+"");
         map.put("title",topic.getTitle());
         map.put("content",topic.getContent());
         map.put("category",category);
@@ -142,17 +142,17 @@ Map<String, Object> category = new HashMap<>();
                 Map<String, Object> reply = new HashMap<>();
                 reply.put("content",r.getContent());
                 reply.put("createdAt",r.getCreatedAt());
-                reply.put("_id",r.getId());
+                reply.put("_id",r.getId()+"");
                 reply.put("__v",0);
-                reply.put("topic",r.getTopic().getId());
+                reply.put("topic",r.getTopic().getId()+"");
                 reply.put("updatedAt",r.getUpdatedAt());
                 Map<String, Object> userReply = new HashMap<>();
                 userReply.put("avatarUrl","");
                 userReply.put("email",r.getUser().getEmail());
-                userReply.put("id",r.getUser().getId());
+                userReply.put("id",r.getUser().getId()+"");
                 userReply.put("name",r.getUser().getName());
                 userReply.put("role",r.getUser().getRole());
-                userReply.put("_id",r.getUser().getId());
+                userReply.put("_id",r.getUser().getId()+"");
                 userReply.put("__v",0);
                 reply.put("user",userReply);
 
@@ -162,8 +162,9 @@ Map<String, Object> category = new HashMap<>();
         }
         map.put("replies",replies);
 
-        map.put("numberOfReplies",repliesList.size());
-        map.put("id",topic.getId());
+        map.put("numberOfReplies",null);
+        map.put("id",topic.getId()+"");
+        map.put("views",0);
 
 
 

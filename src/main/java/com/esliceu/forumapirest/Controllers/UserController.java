@@ -107,7 +107,7 @@ public class UserController {
             for(Category c: categories) {
                 Map<String, Object> map3 = new HashMap<>();
                 String[] perms2 = {"categories_topics:write","categories_topics:delete","categories_replies:write","categories_replies:delete"};
-                map3.put(c.getTitle(),perms2);
+                map3.put(c.getSlug(),perms2);
                 map2.put("categories",map3);
             }
 
@@ -118,12 +118,12 @@ public class UserController {
         lh.setPermissions(map2);
 
         map.put("role", lh.getRole());
-        map.put("_id", lh.getId());
+        map.put("_id", lh.getId()+"");
         map.put("email", lh.getEmail());
         map.put("name", lh.getName());
         map.put("__v", lh.get__v());
         map.put("avatarUrl", lh.getAvatarUrl());
-        map.put("id", lh.getId());
+        map.put("id", lh.getId()+"");
         map.put("permissions", lh.getPermissions());
         map.put("iat", tokenService.getIatFromToken(token.replace("Bearer ", "")));
         /*pAYLOAD*/

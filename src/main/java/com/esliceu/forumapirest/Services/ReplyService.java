@@ -41,4 +41,8 @@ public class ReplyService {
     replyRepo.deleteById(replyId);
 
     }
+
+    public void updateReply(long replyId, String content, long topicId) {
+    replyRepo.updateReply(content,Instant.now(),replyId);
+    }
 }
