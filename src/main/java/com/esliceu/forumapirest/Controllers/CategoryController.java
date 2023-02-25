@@ -2,7 +2,11 @@ package com.esliceu.forumapirest.Controllers;
 
 import com.esliceu.forumapirest.DTOs.CategoryDTO;
 import com.esliceu.forumapirest.Models.Category;
+import com.esliceu.forumapirest.Models.Reply;
+import com.esliceu.forumapirest.Models.Topic;
 import com.esliceu.forumapirest.Services.CategoryService;
+import com.esliceu.forumapirest.Services.ReplyService;
+import com.esliceu.forumapirest.Services.TopicService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +22,10 @@ import java.util.Map;
 public class CategoryController {
     @Autowired
     CategoryService categoryService;
+    @Autowired
+    TopicService topicService;
+    @Autowired
+    ReplyService replyService;
 
     @GetMapping("/categories")
     @CrossOrigin
@@ -136,7 +144,16 @@ public class CategoryController {
     @DeleteMapping("/categories/{slug}")
     @CrossOrigin
     public boolean deleteCategory(HttpServletResponse response, @PathVariable String slug) throws IOException {
+        Long id = categoryService.getCategoryBySlug(slug).getId();
+        List<Topic> topics = topicService.getTopicsByCategoryId(id);
 
+        for (Topic t : topics) {
+            List<Reply> replies = replyService.getRepliesByTopicId(t.getId());
+            for (Reply r : replies) {
+                replyService.deleteReply(r.getId());
+            }
+            topicService.deleteTopic(t.getId()+"");
+        }
         categoryService.deleteCategory(slug);
 
         return true;

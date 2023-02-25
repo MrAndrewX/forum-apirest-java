@@ -48,4 +48,8 @@ public class TopicService {
        topicRepo.updateTopic(title,content,categoryid,Long.parseLong(topicid));
     }
 
+    public void deleteTopic(String id) {
+        topicRepo.deleteAllRepliesByTopicId(Long.parseLong(id));
+        topicRepo.deleteById(Long.parseLong(id));
+    }
 }

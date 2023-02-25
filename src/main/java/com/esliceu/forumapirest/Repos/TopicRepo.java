@@ -18,4 +18,8 @@ public interface TopicRepo extends JpaRepository<Topic, Long> {
 @Modifying
     @Query("update Topic t set t.title = :title, t.content = :content, t.category.id = :categoryid where t.id = :topicid")
     void updateTopic(@Param("title") String title, @Param("content")String content,@Param("categoryid") long categoryid,@Param("topicid") long topicid);
+
+    @Modifying
+    @Query("delete from Reply r where r.topic.id = :topicid")
+    void deleteAllRepliesByTopicId(@Param("topicid") long parseLong);
 }

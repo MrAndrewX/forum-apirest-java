@@ -8,6 +8,7 @@ import com.esliceu.forumapirest.Models.Reply;
 import com.esliceu.forumapirest.Models.Topic;
 import com.esliceu.forumapirest.Models.User;
 import com.esliceu.forumapirest.Services.*;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -235,6 +236,23 @@ Map<String, Object> category = new HashMap<>();
 
 
 
+        return map;
+    }
+
+    @DeleteMapping("/topics/{id}")
+    @CrossOrigin
+    public Map<String, Object> deleteTopic(@PathVariable String id, @RequestHeader("Authorization") String token, HttpServletResponse response) {
+        Map <String, Object> map = new HashMap<>();
+        Topic t = topicService.getTopicById(id);
+
+        if (t.getUser().getId() == userService.getUserByEmail(tokenService.getEmailFromToken(token.replace("Bearer ",""))).getId()) {
+            topicService.deleteTopic(id);
+            map.put("message","Topic deleted");
+        } else {
+            map.put("message","Unauthorized");
+            response.setStatus(401);
+        }
+        map.put("message","Topic deleted");
         return map;
     }
 
