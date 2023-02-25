@@ -2,6 +2,7 @@ package com.esliceu.forumapirest.Controllers;
 
 import com.esliceu.forumapirest.DTOs.LoginDTO;
 import com.esliceu.forumapirest.DTOs.TopicDTO;
+import com.esliceu.forumapirest.DTOs.TopicPutDTO;
 import com.esliceu.forumapirest.Models.Category;
 import com.esliceu.forumapirest.Models.Reply;
 import com.esliceu.forumapirest.Models.Topic;
@@ -104,6 +105,7 @@ Map<String, Object> category = new HashMap<>();
         //* Set Replies *//
 
         List<Reply> repliesList = replyService.getRepliesByTopicId(topic.getId());
+        System.out.println("LISTA DE REPLIES:" + repliesList);
 
         for (Reply r: repliesList) {
 
@@ -135,7 +137,31 @@ Map<String, Object> category = new HashMap<>();
         map.put("createdAt",topic.getCreatedAt());
         map.put("updatedAt",topic.getUpdatedAt());
         map.put("__v",0);
-        map.put("replies",repliesList);
+        Map<String, Object> replies = new HashMap<>();
+        for (Reply r: repliesList) {
+                Map<String, Object> reply = new HashMap<>();
+                reply.put("content",r.getContent());
+                reply.put("createdAt",r.getCreatedAt());
+                reply.put("_id",r.getId());
+                reply.put("__v",0);
+                reply.put("topic",r.getTopic().getId());
+                reply.put("updatedAt",r.getUpdatedAt());
+                Map<String, Object> userReply = new HashMap<>();
+                userReply.put("avatarUrl","");
+                userReply.put("email",r.getUser().getEmail());
+                userReply.put("id",r.getUser().getId());
+                userReply.put("name",r.getUser().getName());
+                userReply.put("role",r.getUser().getRole());
+                userReply.put("_id",r.getUser().getId());
+                userReply.put("__v",0);
+                reply.put("user",userReply);
+
+            replies.put(r.getId()+"",reply);
+
+
+        }
+        map.put("replies",replies);
+
         map.put("numberOfReplies",repliesList.size());
         map.put("id",topic.getId());
 
@@ -166,4 +192,49 @@ Map<String, Object> category = new HashMap<>();
 
         return map;
     }
+
+    @PutMapping("/topics/{id}")
+    @CrossOrigin
+    public Map<String, Object> updateTopic(@PathVariable String id, @RequestBody TopicPutDTO topicDTO, @RequestHeader("Authorization") String token) {
+        Map <String, Object> map = new HashMap<>();
+        Topic topic = topicService.getTopicById(id);
+
+        topicService.updateTopic(id,topicDTO.getTitle(),topicDTO.getContent(),categoryService.getCategoryBySlug(topicDTO.getCategory()).getId());
+
+
+        Map<String, Object> category = new HashMap<>();
+        category.put("color",topic.getCategory().getColor());
+        category.put("description",topic.getCategory().getDescription());
+        category.put("moderators",new String[]{});
+        category.put("slug",topic.getCategory().getSlug());
+        category.put("title",topicDTO.getTitle());
+        category.put("__v",0);
+        category.put("_id",topic.getCategory().getId());
+        map.put("category",category);
+        map.put("content",topicDTO.getContent());
+        map.put("createdAt",topic.getCreatedAt());
+        map.put("id",topic.getId());
+        map.put("numberOfReplies",null);
+        List<Reply> repliesList = replyService.getRepliesByTopicId(topic.getId());
+        map.put("replies",repliesList);
+        map.put("title",topicDTO.getTitle());
+        map.put("updatedAt",topic.getUpdatedAt());
+        Map<String, Object> user = new HashMap<>();
+        user.put("avatarUrl","");
+        user.put("email",topic.getUser().getEmail());
+        user.put("id",topic.getUser().getId());
+        user.put("name",topic.getUser().getName());
+        user.put("role",topic.getUser().getRole());
+        user.put("__v",0);
+        user.put("_id",topic.getUser().getId());
+        map.put("user",user);
+        map.put("views",0);
+        map.put("__v",0);
+        map.put("_id",topic.getId());
+
+
+
+        return map;
+    }
+
 }

@@ -42,4 +42,10 @@ public class TopicService {
 
 
     }
+
+
+    public void updateTopic(String topicid, String title, String content, long categoryid) {
+       topicRepo.updateTopic(title,content,categoryid,Long.parseLong(topicid));
+    }
+
 }

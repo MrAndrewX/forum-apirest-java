@@ -8,5 +8,5 @@ import java.util.List;
 public interface ReplyRepo extends JpaRepository<Reply, Long> {
 
 
-    List<Reply> findAllRepliesById(long id);
+    List<Reply> findAllReplyByTopicId(long id);
 }

@@ -133,4 +133,13 @@ public class CategoryController {
 
         return map;
     }
+    @DeleteMapping("/categories/{slug}")
+    @CrossOrigin
+    public boolean deleteCategory(HttpServletResponse response, @PathVariable String slug) throws IOException {
+
+        categoryService.deleteCategory(slug);
+
+        return true;
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.esliceu.forumapirest.Controllers;
 
+import com.esliceu.forumapirest.DTOs.PasswprdDTO;
+import com.esliceu.forumapirest.DTOs.ProfileDTO;
 import com.esliceu.forumapirest.Forms.LoginForm;
 import com.esliceu.forumapirest.DTOs.LoginDTO;
 import com.esliceu.forumapirest.Forms.RegisterForm;
@@ -130,6 +132,55 @@ public class UserController {
         String json = gson.toJson(map);
         System.out.println(json);
         return map;
+    }
+
+    @PutMapping("/profile/password")
+    @CrossOrigin
+    public Map<String, Object> changePassword(HttpServletRequest request, HttpServletResponse response, @RequestHeader("Authorization") String token, @RequestBody PasswprdDTO passworddto) {
+        User u = userService.getUserByEmail(tokenService.getEmailFromToken(token.replace("Bearer ", "")));
+        boolean checkOldPasswd = userService.checkUser(u.getEmail(), passworddto.getCurrentPassword());
+        Map<String, Object> map = new HashMap<>();
+        if (passworddto.getNewPassword().equals(passworddto.getCurrentPassword()) && checkOldPasswd) {
+
+            map.put("message", "Your new password is the same as the old one");
+            response.setStatus(400);
+        }else if (checkOldPasswd) {
+            userService.changePassword(u, passworddto.getNewPassword());
+            map.put("message", true);
+        } else{
+            map.put("message", "Your current password is incorrect");
+            response.setStatus(400);
+        }
+        return map;
+    }
+
+    @PutMapping("/profile")
+    @CrossOrigin
+    public Map<String, Object> changeProfile(HttpServletRequest request, HttpServletResponse response, @RequestHeader("Authorization") String token, @RequestBody ProfileDTO profiledto) {
+
+    Map<String, Object> map =  new HashMap<>();
+        User u = userService.getUserByEmail(tokenService.getEmailFromToken(token.replace("Bearer ", "")));
+        userService.updateUser(u.getId(), profiledto);
+        Map<String, Object> map2 = new HashMap<>();
+        map.put("message", true);
+        map2.put("avatarUrl", "");
+        map2.put("email", profiledto.getEmail());
+        map2.put("id", u.getId());
+        map2.put("name", profiledto.getName());
+        map2.put("role", u.getRole());
+        map2.put("__v", 0);
+        map2.put("_id", u.getId());
+        Map <String, Object> map3 = new HashMap<>();
+        String[] perms = {"categories:write","categories:delete","own_topics:write","own_topics:delete","own_replies:write","own_replies:delete"};
+        map3.put("root",perms);
+        map3.put("categories",categoryService.getAllCategories());
+        map2.put("permissions",map3);
+
+
+
+        map.put("user", map2);
+        return map;
+
     }
 
 

@@ -19,6 +19,8 @@ public interface CategoryRepo extends JpaRepository<Category, Long> {
     @Query("update Category c set c.title = :title, c.description = :description where c.slug = :slug")
     void updateCategory(@Param("slug") String slug, @Param("title") String title, @Param("description") String description);
 
+    void deleteBySlug(String slug);
+
 
 //Save
 

@@ -52,6 +52,10 @@ public class CategoryService {
         categoryRepo.updateCategory(slug, title, description);
 
     }
+
+    public void deleteCategory(String slug) {
+        categoryRepo.deleteBySlug(slug);
+    }
 }
 
 
