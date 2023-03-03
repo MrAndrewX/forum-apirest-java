@@ -161,9 +161,10 @@ Map<String, Object> category = new HashMap<>();
 
 
         }
-        map.put("replies",replies);
 
-        map.put("numberOfReplies",null);
+        //map.put("replies",replies);
+        map.put("replies",repliesList);
+        map.put("numberOfReplies",repliesList.size());
         map.put("id",topic.getId()+"");
         map.put("views",0);
 

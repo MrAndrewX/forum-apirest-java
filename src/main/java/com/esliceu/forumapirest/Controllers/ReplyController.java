@@ -56,6 +56,11 @@ public class ReplyController {
         userMap.put("role",user.getRole());
         userMap.put("__v",0);
         userMap.put("_id",String.valueOf(user.getId()));
+        Map<String,Object> map3 = new HashMap<>();
+        String[] perms = {"categories:write","categories:delete","own_topics:write","own_topics:delete","own_replies:write","own_replies:delete"};
+        map3.put("root",perms);
+        userMap.put("permissions",map3);
+
 
         map.put("user",userMap);
         map.put("__v",0);
